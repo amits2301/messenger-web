@@ -1,16 +1,32 @@
 import { useState } from "react";
 import "./Login.css";
-
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../utils/userSlice";
+import { useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [emailId, setEmailId] = useState("Harvey@gmail.com");
+  const [password, setPassword] = useState("Harvey@1994new");
 
   const handleLogin = async () => {
+    const loginData = {
+      emailId,
+      password,
+    };
     try {
-      const response = await axios.get("/user?ID=12345");
+      const url = `${API_URL}/login`;
+      const response = await axios.post(url, loginData, {
+        withCredentials: true,
+      });
       console.log(response);
+      dispatch(addUser(response.data));
+      return navigate("/");
     } catch (error) {
       console.error(error);
     }

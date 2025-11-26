@@ -1,14 +1,44 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { removeUser } from "../utils/userSlice";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const NavBar = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+
+  const handleLogout = async () => {
+    try {
+      const url = `${API_URL}/logout`;
+
+      const response = await axios.post(
+        url,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response);
+
+      dispatch(removeUser());
+      return navigate("/login");
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="flex-1">
-        <Link to="/" className="btn btn-ghost text-xl">Messenger</Link>
+        <Link to="/" className="btn btn-ghost text-xl">
+          Messenger
+        </Link>
       </div>
       {user && (
         <div className="flex gap-2 items-center">
@@ -37,7 +67,7 @@ const NavBar = () => {
                 <a>Settings</a>
               </li>
               <li>
-                <a>Logout</a>
+                <a onClick={handleLogout}>Logout</a>
               </li>
             </ul>
           </div>

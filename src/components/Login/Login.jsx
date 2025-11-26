@@ -12,7 +12,8 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const [emailId, setEmailId] = useState("Harvey@gmail.com");
-  const [password, setPassword] = useState("Harvey@1994new");
+  const [password, setPassword] = useState("Harvey@1994new2");
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
     const loginData = {
@@ -29,6 +30,12 @@ const Login = () => {
       return navigate("/");
     } catch (error) {
       console.error(error);
+      setError(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "Something went wrong"
+      );
     }
   };
   return (
@@ -106,6 +113,8 @@ const Login = () => {
               At least one uppercase letter
             </p>
           </fieldset>
+          {error && <small className="text-red-500">{error}</small>}
+
           <div className="card-actions justify-end">
             <button className="btn btn-primary" onClick={handleLogin}>
               Login
